@@ -24,3 +24,8 @@ Cargo.lock
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+
+tags
+
+.vscode
