@@ -7,8 +7,9 @@ console.
 E.g.
 
 | Name | Verb |
-|Sam | Eats|
-|Mark | Writes|
+-------|------
+Sam | Eats
+Mark | Writes
 
 Output:
 ```
