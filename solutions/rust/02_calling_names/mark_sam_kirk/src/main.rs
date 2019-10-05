@@ -1,43 +1,28 @@
-use std::sync::mpsc;
-use std::thread;
-use std::time::Duration;
-
-struct Burger {
-	id: u8,
-}
-
-fn producer(tx: mpsc::Sender<Burger>) {
-	for count in 1..=10 {
-		let burger = Burger { id: count };
-		thread::sleep(Duration::from_secs(1));
-		println!("Cooked burger {}.", burger.id);
-		tx.send(burger).unwrap();
-	}
-	println!("No more burgers.");
-}
-
-fn waiter(rx: mpsc::Receiver<Burger>, ty: mpsc::Sender<Burger>) {
-	for received in rx {
-		println!("Got a burger");
-		ty.send(received);
-	}
-}
-
-fn consumer(rx: mpsc::Receiver<Burger>) {
-	for received in rx {
-		println!("I ate burger {}!", received.id);
-	}
-}
+use std::fs;
+use rand::prelude::*;
 
 fn main() {
-	let (producer_tx, prducer_rx) = mpsc::channel();
-	let (waiter_tx, waiter_rx) = mpsc::channel();
+    let nouns = fs::read_to_string("nouns.txt").expect("Something went wrong");
+    let verbs = fs::read_to_string("verbs.txt").expect("Something went wrong");
 
-	let thread_handle = thread::spawn(move || producer(producer_tx));
-	let waiter_handle = thread::spawn(move || waiter(prducer_rx, waiter_tx));
-	let consumer_handle = thread::spawn(move || consumer(waiter_rx));
+    let rng = rand::thread_rng();
+    let first_noun_list: Vec<&str> = shuffled_words(&nouns, rng);
+    let second_noun_list: Vec<&str> = shuffled_words(&nouns, rng);
+    let verb_list: Vec<&str> = shuffled_words(&verbs, rng);
 
-	consumer_handle.join().unwrap();
-	thread_handle.join().unwrap();
-	waiter_handle.join().unwrap();
+    let zipped = first_noun_list.iter()
+        .zip(verb_list.iter())
+        .map(|t| format!("{ } { }", t.0, t.1))
+        .zip(second_noun_list.iter())
+        .map(|t| format!("{ } { }", t.0, t.1));
+
+    for item in zipped {
+        println!("{ }", item);
+    }
+}
+
+fn shuffled_words (words: &str, mut rng: impl RngCore) -> Vec<&str> {
+    let mut word_vect: Vec<&str> = words.lines().collect();
+    word_vect.shuffle(&mut rng);
+    return word_vect;
 }
