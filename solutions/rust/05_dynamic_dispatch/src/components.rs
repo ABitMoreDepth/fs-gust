@@ -50,3 +50,33 @@ impl Render for TextBox {
         Ok(()) // Return an empty Ok
     }
 }
+
+pub struct Container<'a> {
+    Contents: Vec<Box<dyn Render +'a>>,
+    Name: &'static str   
+}
+
+impl<'a> Container<'a> {
+    pub fn new(name: &'static str) -> Container {
+        Container {
+            Name: name,
+            Contents: Vec::new()
+        }
+    }
+
+    pub fn add(&mut self, renderable: impl Render + 'a) {
+        let boxed = Box::new(renderable);
+        self.Contents.push(boxed);
+    }
+}
+
+impl Render for Container<'_> {
+    fn render(&self) -> RenderResult {
+        println!("{}", self.Name);
+        for item in self.Contents.iter() {
+            item.render()?;
+        }
+        
+        Ok(())
+    }
+}

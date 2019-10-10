@@ -1,21 +1,22 @@
 mod components;
 
-use crate::components::{Label, Render, TextBox};
-
-fn renderer(components: &Vec<Box<dyn Render>>) -> Result<(), String> {
-	for component in components.iter() {
-		component.render()?;
-	}
-
-	Ok(())
-}
+use crate::components::{Label, Render, TextBox, Container};
 
 fn main() {
-	let components: Vec<Box<dyn Render>> = vec![
-		Box::new(Label::new("hello")),
-		Box::new(Label::new("world!")),
-		Box::new(TextBox::new("Some input", "input", "Please type something")),
-	];
 
-	renderer(&components).unwrap();
+	let mut page = Container::new("Sample Page");
+
+	page.add(Label::new("Hello"));
+	page.add(Label::new("World"));
+	page.add(TextBox::new("Some input", "input", "Please type something"));
+
+	let mut sub_page = Container::new("Sample sub_page");
+
+	sub_page.add(Label::new("This is neat!"));
+	sub_page.add(Label::new("Wouldn't you say?"));
+	sub_page.add(TextBox::new("Done now?", "input", "Enter yes to stop"));
+
+	page.add(sub_page);
+
+	page.render().unwrap();
 }
