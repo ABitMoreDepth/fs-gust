@@ -4,35 +4,31 @@ pub trait Render {
     fn render(&self) -> RenderResult;
 }
 
-pub struct Label {
-    text: &'static str,
+pub struct Label<'a> {
+    text: &'a str,
 }
 
-impl Label {
-    pub fn new(text: &'static str) -> Label {
+impl<'a> Label<'a> {
+    pub fn new(text: &'a str) -> Label {
         Label { text: text }
     }
 }
 
-impl Render for Label {
+impl Render for Label<'_> {
     fn render(&self) -> RenderResult {
         println!("{}", self.text);
         Ok(()) // Return an empty Ok
     }
 }
 
-pub struct TextBox {
-    heading: &'static str,
-    value: &'static str,
-    placeholder_text: &'static str,
+pub struct TextBox<'a> {
+    heading: &'a str,
+    value: &'a str,
+    placeholder_text: &'a str,
 }
 
-impl TextBox {
-    pub fn new(
-        heading: &'static str,
-        value: &'static str,
-        placeholder_text: &'static str,
-    ) -> TextBox {
+impl<'a> TextBox<'a> {
+    pub fn new(heading: &'a str, value: &'a str, placeholder_text: &'a str) -> TextBox<'a> {
         TextBox {
             heading: heading,
             value: value,
@@ -41,7 +37,7 @@ impl TextBox {
     }
 }
 
-impl Render for TextBox {
+impl Render for TextBox<'_> {
     fn render(&self) -> RenderResult {
         println!(
             "{} - {} - {}",
@@ -52,31 +48,31 @@ impl Render for TextBox {
 }
 
 pub struct Container<'a> {
-    Contents: Vec<Box<dyn Render +'a>>,
-    Name: &'static str   
+    contents: Vec<Box<dyn Render + 'a>>,
+    name: &'a str,
 }
 
 impl<'a> Container<'a> {
-    pub fn new(name: &'static str) -> Container {
+    pub fn new(name: &'a str) -> Container {
         Container {
-            Name: name,
-            Contents: Vec::new()
+            name: name,
+            contents: Vec::new(),
         }
     }
 
     pub fn add(&mut self, renderable: impl Render + 'a) {
         let boxed = Box::new(renderable);
-        self.Contents.push(boxed);
+        self.contents.push(boxed);
     }
 }
 
 impl Render for Container<'_> {
     fn render(&self) -> RenderResult {
-        println!("{}", self.Name);
-        for item in self.Contents.iter() {
+        println!("{}", self.name);
+        for item in self.contents.iter() {
             item.render()?;
         }
-        
+
         Ok(())
     }
 }
