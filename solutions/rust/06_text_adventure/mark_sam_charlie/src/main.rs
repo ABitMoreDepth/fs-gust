@@ -20,15 +20,19 @@ impl World {
 
         match current_location.exits.get(direction) {
             Some(room_id) => {
-                self.player_location = room_id.clone();        
+                self.player_location = room_id.clone();
                 Ok(format!("You have moved {}", direction))
-            },
-            None => Err(format!("{} is not a valid direction", direction))
+            }
+            None => Err(format!("{} is not a valid direction", direction)),
         }
     }
 
     fn get_location_description(&self) -> String {
-        self.locations.get(&self.player_location).unwrap().description.clone()
+        self.locations
+            .get(&self.player_location)
+            .unwrap()
+            .description
+            .clone()
     }
 
     fn get_player_room(&mut self) -> &mut Room {
@@ -37,11 +41,11 @@ impl World {
 }
 
 #[derive(Debug)]
-struct Room{
+struct Room {
     description: String,
     id: String,
     exits: HashMap<String, String>,
-    items: Vec<Item>
+    items: Vec<Item>,
 }
 
 impl<'a> Room {
@@ -50,14 +54,14 @@ impl<'a> Room {
             description,
             id,
             exits: HashMap::new(),
-            items: Vec::new(), 
+            items: Vec::new(),
         }
     }
 
     fn add_exit(&mut self, command: String, exit_id: String) {
         self.exits.insert(command, exit_id);
     }
-    
+
     fn get_exits(&self) -> impl Iterator<Item = &String> {
         self.exits.values()
     }
@@ -68,21 +72,20 @@ impl<'a> Room {
 
     fn take_item(&mut self, player: &mut Player, item_name: String) -> Result<String, String> {
         match self.items.iter().position(|i| i.name == item_name) {
-             Some(index) => { 
+            Some(index) => {
                 let temp = self.items.remove(index);
                 player.inventory.push(temp);
                 Ok(format!("Picked up {}", item_name))
-            },
-            None => Err(format!("No item of type {} is present", item_name))
+            }
+            None => Err(format!("No item of type {} is present", item_name)),
         }
     }
 }
 
-
 #[derive(Default, Debug)]
 struct Player {
     name: String,
-    inventory: Vec<Item>
+    inventory: Vec<Item>,
 }
 
 impl Player {
@@ -96,14 +99,12 @@ impl Player {
 
 #[derive(Debug)]
 struct Item {
-    name: String
+    name: String,
 }
 
 impl Item {
     fn new(name: String) -> Item {
-        Item {
-            name: name
-        }
+        Item { name: name }
     }
 }
 
