@@ -2,9 +2,9 @@
 extern crate derive_new;
 
 mod world_building;
-use std::io::{self, BufRead};
+use std::io::{self};
 use itertools::Itertools;
-use crate::world_building::{World, Room, Item, Player};
+use crate::world_building::{World, Room, Item};
 
 macro_rules! shaper_of_worlds { 
     (
@@ -61,10 +61,8 @@ fn main() {
             ]
         ]
     );
-
-    let player = Player::new("John Smith".to_string());    
-    let mut done = false;
-    let stdin = io::stdin();
+     
+    let mut done = false;    
 
     println!("Welcome");
 
@@ -93,29 +91,4 @@ fn main() {
             }
         }
     }
-
-    //let player_location = world.get_player_room();
-    // let result = player_location.take_item(&mut player, "stick".to_string());
-    // match result {
-    //     Ok(output) => println!("{}", output),
-    //     Err(output) => println!("{}", output),
-    // }
-
-    // println!("{}", world.get_location_description());
-
-    // world.move_player(&"North".to_string()).unwrap();
-
-    // println!("{}", world.get_location_description());
-
-    // match world.move_player(&"North".to_string()) {
-    //     Ok(move_msg) => println!("{}", move_msg),
-    //     Err(err_msg) => println!("{}", err_msg),
-    // }
-
-    //let player_location = world.get_player_room();
-    // let result = player_location.take_item(&mut player, "stone".to_string());
-    // match result {
-    //     Ok(output) => println!("{}", output),
-    //     Err(output) => println!("{}", output),
-    //}
 }
