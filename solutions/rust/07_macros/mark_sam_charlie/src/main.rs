@@ -61,7 +61,7 @@ impl<'a> Room {
     fn add_exit(&mut self, command: String, exit_id: String) {
         self.exits.insert(command, exit_id);
     }
-    
+
     fn get_exits(&self) -> impl Iterator<Item = &String> {
         self.exits.values()
     }
@@ -108,15 +108,15 @@ impl Item {
     }
 }
 
-macro_rules! shaper_of_worlds { 
+macro_rules! shaper_of_worlds {
     (
         location = $player:expr,
         rooms = [
             $([
                 $room_name:expr,
-                $room_description:expr, 
+                $room_description:expr,
                 items=[$($item:expr$(,)*)*],
-                exits=[$($dir:expr => $dest:expr)*]   
+                exits=[$($dir:expr => $dest:expr)*]
             ])+
         ]
     ) => {
